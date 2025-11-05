@@ -117,7 +117,7 @@ See [synvya-client-2](https://github.com/Synvya/synvya-client-2) `client/src/lib
 - Encryption occurs at the **seal** (kind 13) and **gift wrap** (kind 1059) layers using NIP-44.
 - All inter-party messages **must** use **NIP-59 Gift Wrap** for privacy.
 - **Replaceable events** follow **NIP-01** and use `a` tags, not deprecated `d` tags.
-- **Threading** (root/reply) follows **NIP-10**.
+- **Threading** (root) follows **NIP-10**.
 - Light **Proof of Work (NIP-13)** is recommended for anti-spam.
 
 ---
