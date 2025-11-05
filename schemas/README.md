@@ -23,19 +23,31 @@ schemas/
 ├── reservation.request.schema.json
 ├── reservation.response.schema.json
 ├── reservation.modification.request.schema.json
-└── reservation.modification.response.schema.json
+├── reservation.modification.response.schema.json
+└── README.md
 ```
 
 ---
 
 ## 🧩 Schema Overview
 
+We provide **one schema per event kind** that validates the complete unsigned rumor event structure including tags.
+
 | Schema File | Purpose |
 |--------------|----------|
-| `reservation.request.schema.json` | Schema for reservation.request message (kind 9901) |
-| `reservation.response.schema.json` | Schema for reservation.response message (kind 9902) |
-| `reservation.modification.request.schema.json` | Schema for reservation.modification.request message (kind 9903) |
-| `reservation.modification.response.schema.json` | Schema for reservation.modification.response message (kind 9904) |
+| `reservation.request.schema.json` | Full event schema for kind 9901 (includes `p` tag validation) |
+| `reservation.response.schema.json` | Full event schema for kind 9902 (includes `p` and `e` tag validation) |
+| `reservation.modification.request.schema.json` | Full event schema for kind 9903 (includes `p` and `e` tag validation) |
+| `reservation.modification.response.schema.json` | Full event schema for kind 9904 (includes `p` and `e` tag validation) |
+
+### Tag Requirements
+
+Schemas validate required tags:
+
+- **Kind 9901**: Requires `p` tag (restaurant public key)
+- **Kind 9902**: Requires `p` tag (recipient) AND `e` tag with `["e", "<unsigned-9901-rumor-id>", "", "root"]`
+- **Kind 9903**: Requires `p` tag (recipient) AND `e` tag with `["e", "<unsigned-9901-rumor-id>", "", "root"]`
+- **Kind 9904**: Requires `p` tag (recipient) AND `e` tag with `["e", "<unsigned-9901-rumor-id>", "", "root"]`
 
 ---
 
@@ -108,28 +120,6 @@ See [synvya-client-2](https://github.com/Synvya/synvya-client-2) `client/src/lib
 - Date-time format validation via `ajv-formats`
 - Automatic schema compilation at module load
 - Integration with NIP-44 encryption for payload security
-
----
-
-## 🧠 Design Notes
-
-- Rumor `content` is **plain text JSON** (not encrypted).
-- Encryption occurs at the **seal** (kind 13) and **gift wrap** (kind 1059) layers using NIP-44.
-- All inter-party messages **must** use **NIP-59 Gift Wrap** for privacy.
-- **Replaceable events** follow **NIP-01** and use `a` tags, not deprecated `d` tags.
-- **Threading** (root/reply) follows **NIP-10**.
-- Light **Proof of Work (NIP-13)** is recommended for anti-spam.
-
----
-
-## 🪴 Extending the Model
-
-To introduce new message types (e.g., `order.request`, `order.response`):
-
-1. Assign a kind in the 9905–9999 range.
-2. Create a new JSON Schema in `/schemas/`.
-3. Include a valid example in `/schemas/examples/`.
-4. Update `README.md` and your SDK registry.
 
 ---
 
