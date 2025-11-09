@@ -82,9 +82,7 @@
         },
         "content": {
           "type": "string",
-          "const": "",
-          "description": "Content must be empty string for visit attestation events",
-          "errorMessage": "content must be an empty string"
+          "description": "JSON string containing visit attestation payload with iso_time"
         },
         "tags": {
           "type": "array",

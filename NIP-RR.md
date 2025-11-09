@@ -228,14 +228,22 @@ The event is intended as a visit token that the customer MAY later embed in a pu
     ["rr", "<unsigned-9901-rumor-id>"],  # Reservation thread id 
     ["p", "<customerPublicKey>"]
   ],
-  "content": "",
+  "content": "<content-in-plain-text>",
   "sig": "<signed by restaurantPrivateKey>"
 }
 ```
 
+**Content Structure:**
+```yaml
+{
+  "iso_time": "<ISO8601 datetime with timezone>",
+}
+```
+
 **Required Tags:**
-	•	`["rr", "<unsigned-9901-rumor-id>"]`: MUST reference the unsigned rumor ID of the original reservation.request `kind:9901` message. This value is the reservation thread id.
-	•	`["p", "<customerPublicKey>"]`: MUST reference the customer associated with the visit.
+- `["rr", "<unsigned-9901-rumor-id>"]`: MUST reference the unsigned rumor ID of the original reservation.request `kind:9901` message. This value is the reservation thread id.
+- `["p", "<customerPublicKey>"]`: MUST reference the customer associated with the visit.
+- `iso_time`: reservation ISO8601 datetime string with timezone offset
 
 ---
 
