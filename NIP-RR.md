@@ -277,12 +277,12 @@ The event is intended as a visit token that the customer MAY later embed in a pu
 	•	`["verified", "<base64-encoded-visit-9905>"]`: Tag used to mark a review as a verified visit. The value MUST be a base64 encoding of the full serialized kind:9905 visit attestation event.
 
 A client MAY treat a `verified.review` `kind:9906` event as a **verified review** if all of the following conditions are met:
-  1.	The event has a `["verified", "<payload>"]` tag.
-	2.	Decoding `<payload>` from base64 yields a valid nostr `visit.attestation` `kind:9905` event with the following properties:
-	  •	`pubkey` matches the restaurant public key indicated by the `verified.review` `kind:9906` `["p", "<restaurantPublicKey>"]` tag
-	  •	There is a `["p", "<customerPublicKey>"]` tag where `<customerPublicKey>` matches the `pubkey` field of the `verified.review` `kind:9906` event
-	  •	There is a `["rr", "<unsigned-9901-rumor-id>"]` tag matching the `["rr", "<unsigned-9901-rumor-id>"]` tag of the `verified.review` `kind:9906` event
-	  •	The `visit.attestation` `kind:9905` event has a valid signature computed according to NIP-01.
+1.	The event has a `["verified", "<payload>"]` tag. 
+2.	Decoding `<payload>` from base64 yields a valid nostr `visit.attestation` `kind:9905` event with the following properties:
+  - `pubkey` matches the restaurant public key indicated by the `verified.review` `kind:9906` `["p", "<restaurantPublicKey>"]` tag
+  - There is a `["p", "<customerPublicKey>"]` tag where `<customerPublicKey>` matches the `pubkey` field of the `verified.review` `kind:9906` event
+  - There is a `["rr", "<unsigned-9901-rumor-id>"]` tag matching the `["rr", "<unsigned-9901-rumor-id>"]` tag of the `verified.review` `kind:9906` event
+  -The `visit.attestation` `kind:9905` event has a valid signature computed according to NIP-01.
 
 If verification succeeds, clients MAY label the review as a “verified visit”. If verification fails, clients MUST NOT display the review. 
 
