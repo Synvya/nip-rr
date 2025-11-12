@@ -313,10 +313,10 @@ Note: *This flow assumes that there is an existing confirmed reservation initiat
 
 Clients MUST validate payloads against JSON schemas before processing:
 
-- Kind 9901: Validate against `reservation.request.schema.json`
-- Kind 9902: Validate against `reservation.response.schema.json`
-- Kind 9903: Validate against `reservation.modification.request.schema.json`
-- Kind 9904: Validate against `reservation.modification.response.schema.json`
+- Kind 9901: Validate against `nostrability/schemata/nips/nip-rp/kind-9901/schema.yaml`
+- Kind 9902: Validate against `nostrability/schemata/nips/nip-rp/kind-9902/schema.yaml`
+- Kind 9903: Validate against `nostrability/schemata/nips/nip-rp/kind-9903/schema.yaml`
+- Kind 9904: Validate against `nostrability/schemata/nips/nip-rp/kind-9904/schema.yaml`
 
 
 Invalid payloads MUST be rejected and not processed further.
@@ -578,7 +578,7 @@ The fact that the customer transacted with the business remains a private fact k
 The fact that the customer transacted with the business becomes a public fact. 
 
 ### JSON Schema Validation
-- Kind 9905: Validate against `transaction.attestation.schema.json`
+- Kind 9905: Validate against `nostrability/schemata/nips/nip-rp/kind-9905/schema.yaml`
 
 ---
 
