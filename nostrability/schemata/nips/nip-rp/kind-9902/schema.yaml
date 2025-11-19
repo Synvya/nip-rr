@@ -58,7 +58,7 @@ allOf:
         errorMessage: "pubkey must be a 64-character lowercase hex string (secp256k1 public key)"
       content:
         type: string
-        description: "JSON string containing reservation response payload"
+        description: "Reservation response message in plain text"
       tags:
         type: array
         items:
@@ -93,7 +93,7 @@ allOf:
                   description: "Tag identifier"
                 - type: string
                   pattern: "^[a-f0-9]{64}$"
-                  description: "Unsigned rumor ID of the original reservation.request (kind 9901)"
+                  description: "Unsigned rumor ID of the original reservation.request (kind 9901) - connects message to reservation thread"
                   errorMessage: "e tag value must be a 64-character lowercase hex string (unsigned rumor ID)"
                 - const: ""
                   description: "Empty string (relay URL not needed for rumors)"
@@ -101,7 +101,62 @@ allOf:
                   description: "Marker indicating this references the root event"
               additionalItems: false
             errorMessage:
-              contains: "tags must include an e tag with format ['e', '<unsigned-9901-rumor-id>', '', 'root']"
+              contains: "tags must include an e tag with format ['e', '<unsigned-9901-rumor.id>', '', 'root']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "status"
+                  description: "Tag identifier"
+                - type: string
+                  enum: ["confirmed", "declined", "cancelled"]
+                  description: "Status of the reservation"
+                  errorMessage: "status must be one of: confirmed, declined, or cancelled"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a status tag with format ['status', '<confirmed|declined|cancelled>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "time"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Inclusive reservation start Unix timestamp in seconds"
+                  errorMessage: "time must be a Unix timestamp in seconds"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a time tag with format ['time', '<unix timestamp in seconds>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "tzid"
+                  description: "Tag identifier"
+                - type: string
+                  description: "Time zone of the reservation time Unix timestamp, as defined by the IANA Time Zone Database (e.g., America/Costa_Rica)"
+                  errorMessage: "tzid must be a valid IANA Time Zone Database identifier"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a tzid tag with format ['tzid', '<IANA Time Zone Database identifier>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "duration"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Duration of reservation in seconds (optional)"
+                  errorMessage: "duration must be a positive integer (duration in seconds)"
+              additionalItems: false
+            errorMessage:
+              contains: "tags may include a duration tag with format ['duration', '<duration in seconds>']"
     required:
       - kind
       - id

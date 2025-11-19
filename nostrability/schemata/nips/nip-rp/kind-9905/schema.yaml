@@ -64,7 +64,9 @@ allOf:
         errorMessage: "pubkey must be a 64-character lowercase hex string (secp256k1 public key)"
       content:
         type: string
-        description: "JSON string containing transaction attestation payload with iso_time and qts_labels"
+        const: ""
+        description: "Content must be empty string"
+        errorMessage: "content must be an empty string"
       tags:
         type: array
         items:
@@ -72,22 +74,8 @@ allOf:
           minItems: 1
           items:
             type: string
-        minItems: 2
+        minItems: 5
         allOf:
-          - contains:
-              type: array
-              minItems: 2
-              maxItems: 2
-              items:
-                - const: "e"
-                  description: "Tag identifier"
-                - type: string
-                  pattern: "^[a-f0-9]{64}$"
-                  description: "Unsigned rumor ID of the original reservation.request (kind 9901)"
-                  errorMessage: "e tag value must be a 64-character lowercase hex string (unsigned rumor ID)"
-              additionalItems: false
-            errorMessage:
-              contains: "tags must include an e tag with format ['e', '<unsigned-9901-rumor-id>']"
           - contains:
               type: array
               minItems: 2
@@ -102,6 +90,64 @@ allOf:
               additionalItems: false
             errorMessage:
               contains: "tags must include a p tag with format ['p', '<customerPublicKey>']"
+          - contains:
+              type: array
+              minItems: 4
+              maxItems: 4
+              items:
+                - const: "e"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[a-f0-9]{64}$"
+                  description: "Unsigned rumor ID of the original reservation.request (kind 9901) - connects message to reservation thread"
+                  errorMessage: "e tag value must be a 64-character lowercase hex string (unsigned rumor ID)"
+                - const: ""
+                  description: "Empty string (relay URL not needed for rumors)"
+                - const: "root"
+                  description: "Marker indicating this references the root event"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include an e tag with format ['e', '<unsigned-9901-rumor.id>', '', 'root']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "time"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Inclusive reservation start Unix timestamp in seconds"
+                  errorMessage: "time must be a Unix timestamp in seconds"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a time tag with format ['time', '<unix timestamp in seconds>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "tzid"
+                  description: "Tag identifier"
+                - type: string
+                  description: "Time zone of the reservation time Unix timestamp, as defined by the IANA Time Zone Database (e.g., America/Costa_Rica)"
+                  errorMessage: "tzid must be a valid IANA Time Zone Database identifier"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a tzid tag with format ['tzid', '<IANA Time Zone Database identifier>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "qts_labels"
+                  description: "Tag identifier"
+                - type: string
+                  description: "Comma separated list of labels for QTS review"
+                  errorMessage: "qts_labels must be a comma separated list of labels"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a qts_labels tag with format ['qts_labels', '<label1, label2, ..., labelN>']"
     required:
       - kind
       - id

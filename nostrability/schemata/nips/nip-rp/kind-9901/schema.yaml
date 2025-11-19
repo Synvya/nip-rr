@@ -49,7 +49,7 @@ allOf:
       id:
         type: string
         pattern: "^[a-f0-9]{64}$"
-        description: "Deterministic event hash as defined in NIP-01"
+        description: "Deterministic event hash as defined in NIP-01 (the thread id to be used by all other messages for this reservation)"
         errorMessage: "id must be a 64-character lowercase hex string"
       pubkey:
         type: string
@@ -58,7 +58,7 @@ allOf:
         errorMessage: "pubkey must be a 64-character lowercase hex string (secp256k1 public key)"
       content:
         type: string
-        description: "JSON string containing reservation request payload"
+        description: "Reservation request message in plain text"
       tags:
         type: array
         items:
@@ -77,13 +77,137 @@ allOf:
                   description: "Tag identifier"
                 - type: string
                   pattern: "^[a-f0-9]{64}$"
-                  description: "Restaurant public key"
+                  description: "Business public key"
                   errorMessage: "p tag value must be a 64-character lowercase hex string"
                 - type: string
                   description: "Recommended relay URL (optional)"
               additionalItems: false
             errorMessage:
-              contains: "tags must include at least one p tag identifying the restaurant"
+              contains: "tags must include at least one p tag identifying the business"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "party_size"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^(1[0-9]|[1-9]|20)$"
+                  description: "Number of people in the reservation (integer between 1 and 20)"
+                  errorMessage: "party_size must be an integer between 1 and 20"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a party_size tag with format ['party_size', '<integer between 1 and 20>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "time"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Inclusive reservation start Unix timestamp in seconds"
+                  errorMessage: "time must be a Unix timestamp in seconds"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a time tag with format ['time', '<unix timestamp in seconds>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "tzid"
+                  description: "Tag identifier"
+                - type: string
+                  description: "Time zone of the reservation time, earliest_time, and latest_time Unix timestamps, as defined by the IANA Time Zone Database (e.g., America/Costa_Rica)"
+                  errorMessage: "tzid must be a valid IANA Time Zone Database identifier"
+              additionalItems: false
+            errorMessage:
+              contains: "tags must include a tzid tag with format ['tzid', '<IANA Time Zone Database identifier>']"
+          - anyOf:
+              - contains:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    - const: "telephone"
+                      description: "Tag identifier"
+                    - type: string
+                      pattern: "^tel:"
+                      description: "Phone number for the reservation holder as 'tel:' URI per RFC 3966"
+                      errorMessage: "telephone must be a 'tel:' URI as per RFC 3966"
+                  additionalItems: false
+              - contains:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    - const: "email"
+                      description: "Tag identifier"
+                    - type: string
+                      pattern: "^mailto:"
+                      description: "Email for the reservation holder as 'mailto:' URI per RFC 6068"
+                      errorMessage: "email must be a 'mailto:' URI as per RFC 6068"
+                  additionalItems: false
+            errorMessage:
+              anyOf: "tags must include either a telephone tag or an email tag (one of email or telephone must be included)"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "name"
+                  description: "Tag identifier"
+                - type: string
+                  maxLength: 200
+                  description: "Reservation holder name (optional, max 200 chars)"
+                  errorMessage: "name must be a string with max 200 characters"
+              additionalItems: false
+            errorMessage:
+              contains: "tags may include a name tag with format ['name', '<string, max 200 chars>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "duration"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Duration of reservation in seconds (optional)"
+                  errorMessage: "duration must be a positive integer (duration in seconds)"
+              additionalItems: false
+            errorMessage:
+              contains: "tags may include a duration tag with format ['duration', '<duration in seconds>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "earliest_time"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Earliest start time Unix timestamp that the requestor would accept for the reservation (optional)"
+                  errorMessage: "earliest_time must be a Unix timestamp in seconds"
+              additionalItems: false
+            errorMessage:
+              contains: "tags may include an earliest_time tag with format ['earliest_time', '<unix timestamp in seconds>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "latest_time"
+                  description: "Tag identifier"
+                - type: string
+                  pattern: "^[0-9]+$"
+                  description: "Latest start time Unix timestamp that the requestor would accept for the reservation (optional)"
+                  errorMessage: "latest_time must be a Unix timestamp in seconds"
+              additionalItems: false
+            errorMessage:
+              contains: "tags may include a latest_time tag with format ['latest_time', '<unix timestamp in seconds>']"
     required:
       - kind
       - id
