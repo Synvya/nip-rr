@@ -152,11 +152,11 @@ allOf:
                   description: "Tag identifier"
                 - type: string
                   pattern: "^[0-9]+$"
-                  description: "Duration of reservation in seconds (optional)"
+                  description: "Duration of reservation in seconds"
                   errorMessage: "duration must be a positive integer (duration in seconds)"
               additionalItems: false
             errorMessage:
-              contains: "tags may include a duration tag with format ['duration', '<duration in seconds>']"
+              contains: "tags must include a duration tag with format ['duration', '<duration in seconds>']"
     required:
       - kind
       - id

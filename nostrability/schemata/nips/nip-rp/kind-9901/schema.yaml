@@ -54,7 +54,7 @@ allOf:
       pubkey:
         type: string
         pattern: "^[a-f0-9]{64}$"
-        description: "Sender public key"
+        description: "Sender public key (may be reservation holder or a broker acting on behalf of reservation holder)"
         errorMessage: "pubkey must be a 64-character lowercase hex string (secp256k1 public key)"
       content:
         type: string
@@ -161,7 +161,7 @@ allOf:
                   description: "Tag identifier"
                 - type: string
                   maxLength: 200
-                  description: "Reservation holder name (optional, max 200 chars)"
+                  description: "Reservation holder name (optional, max 200 chars). May be different from the party initiating the reservation flow."
                   errorMessage: "name must be a string with max 200 characters"
               additionalItems: false
             errorMessage:
@@ -208,6 +208,20 @@ allOf:
               additionalItems: false
             errorMessage:
               contains: "tags may include a latest_time tag with format ['latest_time', '<unix timestamp in seconds>']"
+          - contains:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                - const: "broker"
+                  description: "Tag identifier"
+                - type: string
+                  enum: ["True", "False"]
+                  description: "Set to 'True' if the party initiating the reservation flow is not the reservation holder (optional boolean)"
+                  errorMessage: "broker must be 'True' or 'False'"
+              additionalItems: false
+            errorMessage:
+              contains: "tags may include a broker tag with format ['broker', '<True|False>']"
     required:
       - kind
       - id

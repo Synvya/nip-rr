@@ -110,9 +110,9 @@ allOf:
                 - const: "status"
                   description: "Tag identifier"
                 - type: string
-                  enum: ["confirmed", "declined"]
+                  enum: ["confirmed", "declined", "cancelled"]
                   description: "Status of the reservation modification"
-                  errorMessage: "status must be one of: confirmed or declined"
+                  errorMessage: "status must be one of: confirmed, declined, or cancelled"
               additionalItems: false
             errorMessage:
               contains: "tags must include a status tag with format ['status', '<confirmed|declined>']"
@@ -152,11 +152,11 @@ allOf:
                   description: "Tag identifier"
                 - type: string
                   pattern: "^[0-9]+$"
-                  description: "Duration of reservation in seconds (optional)"
+                  description: "Duration of reservation in seconds"
                   errorMessage: "duration must be a positive integer (duration in seconds)"
               additionalItems: false
             errorMessage:
-              contains: "tags may include a duration tag with format ['duration', '<duration in seconds>']"
+              contains: "tags must include a duration tag with format ['duration', '<duration in seconds>']"
     required:
       - kind
       - id
